@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contract Gap Analysis Platform - Case Study</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <style>
+        .case-study {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 8rem 2rem 4rem;
+        }
+        .case-study-header {
+            margin-bottom: 3rem;
+        }
+        .back-link {
+            color: var(--color-accent);
+            text-decoration: none;
+            display: inline-block;
+            margin-bottom: 2rem;
+            transition: transform 0.3s ease;
+        }
+        .back-link:hover {
+            transform: translateX(-5px);
+        }
+        .case-study h1 {
+            font-family: var(--font-display);
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+        .case-study-meta {
+            display: flex;
+            gap: 2rem;
+            color: var(--color-text-muted);
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        .meta-item {
+            display: flex;
+            flex-direction: column;
+        }
+        .meta-label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .meta-value {
+            font-size: 1.1rem;
+            color: var(--color-accent);
+            font-weight: 600;
+        }
+        .case-study-content h2 {
+            font-family: var(--font-display);
+            font-size: 2rem;
+            margin: 3rem 0 1rem;
+            color: var(--color-text);
+        }
+        .case-study-content h3 {
+            font-size: 1.3rem;
+            margin: 2rem 0 1rem;
+            color: var(--color-accent);
+        }
+        .case-study-content p {
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+            color: var(--color-text-muted);
+        }
+        .case-study-content ul {
+            margin: 1rem 0 1.5rem 2rem;
+            color: var(--color-text-muted);
+            line-height: 1.8;
+        }
+        .case-study-content li {
+            margin-bottom: 0.5rem;
+        }
+        .highlight-box {
+            background: var(--color-surface);
+            border-left: 3px solid var(--color-accent);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+        .tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin: 1rem 0;
+        }
+        .tech-tag {
+            background: rgba(0, 217, 255, 0.1);
+            color: var(--color-accent);
+            padding: 0.4rem 1rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            border: 1px solid rgba(0, 217, 255, 0.2);
+        }
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        .metric-card {
+            background: var(--color-surface);
+            padding: 1.5rem;
+            border-radius: 8px;
+            border: 1px solid var(--color-border);
+        }
+        .metric-card .metric-value {
+            font-size: 2.5rem;
+            color: var(--color-accent);
+            font-weight: 600;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+        .metric-card .metric-label {
+            color: var(--color-text-muted);
+            font-size: 0.9rem;
+        }
+        code {
+            background: var(--color-surface);
+            padding: 0.2rem 0.5rem;
+            border-radius: 3px;
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
+            color: var(--color-accent);
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <div class="nav-content">
+            <a href="index.html" class="logo">Portfolio</a>
+            <div class="nav-links">
+                <a href="index.html#about">About</a>
+                <a href="index.html#projects">Projects</a>
+                <a href="index.html#contact">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="case-study">
+        <a href="index.html#projects" class="back-link">← Back to Projects</a>
+        
+        <header class="case-study-header">
+            <h1>AI-Powered Contract Gap Analysis Platform</h1>
+            
+            <div class="case-study-meta">
+                <div class="meta-item">
+                    <span class="meta-label">Role</span>
+                    <span class="meta-value">ML Engineer / Team Lead</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Timeline</span>
+                    <span class="meta-value">3 months</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Impact</span>
+                    <span class="meta-value">80% labor reduction</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Company</span>
+                    <span class="meta-value">ThreatConnect (Dataminr)</span>
+                </div>
+            </div>
+
+            <div class="tech-stack">
+                <span class="tech-tag">Python</span>
+                <span class="tech-tag">LangChain</span>
+                <span class="tech-tag">OpenAI GPT-4</span>
+                <span class="tech-tag">RAG</span>
+                <span class="tech-tag">AWS Bedrock</span>
+                <span class="tech-tag">Vector Databases</span>
+                <span class="tech-tag">NLP</span>
+                <span class="tech-tag">Prompt Engineering</span>
+            </div>
+        </header>
+
+        <div class="case-study-content">
+            <h2>The Challenge</h2>
+            <p>
+                ThreatConnect was drowning in contract review work. Legal teams spent weeks manually reading through hundreds of vendor contracts, comparing them against internal compliance requirements, and identifying gaps or missing clauses. This process was:
+            </p>
+            <ul>
+                <li><strong>Time-intensive:</strong> 2-3 hours per contract × hundreds of contracts</li>
+                <li><strong>Error-prone:</strong> Human reviewers missed critical clauses or inconsistencies</li>
+                <li><strong>Non-scalable:</strong> As the company grew, the backlog grew faster than the team</li>
+                <li><strong>Knowledge-dependent:</strong> Only senior legal staff could perform thorough reviews</li>
+            </ul>
+
+            <div class="highlight-box">
+                <strong>Core Problem:</strong> How do we automate the extraction, comparison, and gap analysis of legal contracts while maintaining the accuracy and nuance that legal work demands?
+            </div>
+
+            <h2>The Solution</h2>
+            <p>
+                I led the design and implementation of a Generative AI platform that uses Large Language Models (LLMs) with Retrieval-Augmented Generation (RAG) to automate contract analysis. The system works in three stages:
+            </p>
+
+            <h3>1. Intelligent Document Processing</h3>
+            <p>
+                Built a robust document ingestion pipeline that handles various contract formats (PDF, DOCX, scanned images). Used AWS Textract for OCR when needed, then preprocessed and chunked documents intelligently to preserve legal context.
+            </p>
+
+            <h3>2. RAG-Based Information Retrieval</h3>
+            <p>
+                Implemented a vector database using embeddings to store our internal compliance requirements and historical contract clauses. When analyzing a new contract, the system:
+            </p>
+            <ul>
+                <li>Embeds the contract into the same vector space</li>
+                <li>Retrieves the most relevant compliance requirements</li>
+                <li>Feeds both the contract and requirements to the LLM as context</li>
+            </ul>
+
+            <h3>3. LLM-Powered Gap Analysis</h3>
+            <p>
+                Through extensive prompt engineering, I developed a multi-step prompting strategy that:
+            </p>
+            <ul>
+                <li>Extracts all relevant clauses from the contract</li>
+                <li>Compares them against required clauses using chain-of-thought reasoning</li>
+                <li>Identifies missing, incomplete, or non-compliant sections</li>
+                <li>Generates structured reports with specific recommendations</li>
+            </ul>
+
+            <h2>Technical Deep Dive</h2>
+            
+            <h3>Prompt Engineering Strategy</h3>
+            <p>
+                The biggest challenge was getting the LLM to be both comprehensive and precise. I developed a multi-stage prompting approach:
+            </p>
+            <ul>
+                <li><strong>Stage 1 - Extraction:</strong> "Act as a legal analyst. Extract all clauses from this contract related to [category]..."</li>
+                <li><strong>Stage 2 - Classification:</strong> Classify extracted clauses into predefined categories using few-shot examples</li>
+                <li><strong>Stage 3 - Gap Analysis:</strong> Compare against requirements with explicit instructions to cite specific contract sections</li>
+                <li><strong>Stage 4 - Verification:</strong> A separate LLM call validates findings to reduce hallucinations</li>
+            </ul>
+
+            <h3>RAG Architecture Decisions</h3>
+            <p>
+                Key architectural choices that improved accuracy:
+            </p>
+            <ul>
+                <li>Used <code>text-embedding-ada-002</code> for consistent embeddings across contracts and requirements</li>
+                <li>Implemented hybrid search (vector + keyword) to catch exact legal terminology</li>
+                <li>Built a dynamic context window that adjusts chunk size based on contract complexity</li>
+                <li>Added metadata filtering to prioritize relevant precedents (industry, jurisdiction, etc.)</li>
+            </ul>
+
+            <h3>Handling Edge Cases</h3>
+            <p>
+                Legal documents are messy. I implemented several robustness measures:
+            </p>
+            <ul>
+                <li>Confidence scoring for each extracted clause</li>
+                <li>Flagging of ambiguous language for human review</li>
+                <li>Versioning system to track changes in compliance requirements</li>
+                <li>Audit trail showing which sections of the contract informed each finding</li>
+            </ul>
+
+            <h2>Results & Impact</h2>
+            
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <span class="metric-value">80%</span>
+                    <span class="metric-label">Reduction in manual labor hours</span>
+                </div>
+                <div class="metric-card">
+                    <span class="metric-value">15 min</span>
+                    <span class="metric-label">Average analysis time (down from 2-3 hours)</span>
+                </div>
+                <div class="metric-card">
+                    <span class="metric-value">1000+</span>
+                    <span class="metric-label">Contracts analyzed in first 3 months</span>
+                </div>
+                <div class="metric-card">
+                    <span class="metric-value">95%</span>
+                    <span class="metric-label">Accuracy vs. senior legal review</span>
+                </div>
+            </div>
+
+            <p>
+                Beyond the quantitative metrics, the system fundamentally changed how the legal team operates:
+            </p>
+            <ul>
+                <li><strong>Freed up senior staff:</strong> Legal experts now focus on complex edge cases rather than routine reviews</li>
+                <li><strong>Faster contract cycles:</strong> Vendor onboarding accelerated by 3-4 weeks on average</li>
+                <li><strong>Knowledge democratization:</strong> Junior staff can now perform preliminary reviews with AI assistance</li>
+                <li><strong>Continuous improvement:</strong> The system learns from human corrections, getting smarter over time</li>
+            </ul>
+
+            <h2>Challenges & Learnings</h2>
+            
+            <h3>Challenge 1: LLM Hallucinations</h3>
+            <p>
+                Early versions would occasionally cite clauses that didn't exist. Fixed this by:
+            </p>
+            <ul>
+                <li>Requiring the model to quote exact text with character positions</li>
+                <li>Implementing a verification step that cross-references quotes against source document</li>
+                <li>Adding confidence scores and flagging low-confidence findings for human review</li>
+            </ul>
+
+            <h3>Challenge 2: Domain-Specific Language</h3>
+            <p>
+                Generic LLMs struggled with legal terminology. Addressed through:
+            </p>
+            <ul>
+                <li>Fine-tuning on legal document corpus (when possible)</li>
+                <li>Building a legal terminology glossary into the system prompt</li>
+                <li>Using few-shot examples from actual contracts in our domain</li>
+            </ul>
+
+            <h3>Challenge 3: Cost Management</h3>
+            <p>
+                Running GPT-4 on every contract was expensive. Optimizations included:
+            </p>
+            <ul>
+                <li>Preprocessing to extract only relevant sections before LLM analysis</li>
+                <li>Caching embeddings and common compliance requirements</li>
+                <li>Using cheaper models (GPT-3.5) for initial classification, GPT-4 only for complex analysis</li>
+                <li>Batch processing contracts during off-peak hours</li>
+            </ul>
+
+            <h2>What I'd Do Differently</h2>
+            <p>
+                Reflecting on the project, a few areas for improvement:
+            </p>
+            <ul>
+                <li><strong>Earlier user testing:</strong> Built v1 in isolation; v2 needed significant UX overhaul based on legal team feedback</li>
+                <li><strong>More structured evaluation:</strong> Should have built a test set of annotated contracts earlier for systematic evaluation</li>
+                <li><strong>Explainability from day one:</strong> Added explanation features in v2, but should have been core from the start for legal use case</li>
+            </ul>
+
+            <h2>Key Takeaways</h2>
+            <div class="highlight-box">
+                <p><strong>For LLM-based automation projects:</strong></p>
+                <ul style="margin-bottom: 0;">
+                    <li>Prompt engineering is 50% of the solution. Invest time here.</li>
+                    <li>RAG > fine-tuning for most knowledge-intensive tasks (faster iteration, more control)</li>
+                    <li>Build verification layers. Never trust a single LLM call for critical decisions.</li>
+                    <li>Domain experts are essential. Collaborate closely with end users throughout.</li>
+                    <li>Start with a narrow use case and expand. We began with just NDAs before tackling all contract types.</li>
+                </ul>
+            </div>
+
+            <p style="margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--color-border);">
+                <strong>Interested in this project or have questions about the technical implementation?</strong><br>
+                <a href="index.html#contact" style="color: var(--color-accent);">Let's connect →</a>
+            </p>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 Network & Cloud Engineer Portfolio. Built with HTML, CSS, and JavaScript.</p>
+        </div>
+    </footer>
+</body>
+</html>
