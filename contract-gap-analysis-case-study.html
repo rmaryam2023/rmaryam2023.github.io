@@ -171,187 +171,419 @@
 
             <div class="tech-stack">
                 <span class="tech-tag">Python</span>
-                <span class="tech-tag">LangChain</span>
-                <span class="tech-tag">OpenAI GPT-4</span>
-                <span class="tech-tag">RAG</span>
+                <span class="tech-tag">AWS Lambda</span>
+                <span class="tech-tag">AWS Textract</span>
+                <span class="tech-tag">AWS Comprehend</span>
                 <span class="tech-tag">AWS Bedrock</span>
-                <span class="tech-tag">Vector Databases</span>
-                <span class="tech-tag">NLP</span>
-                <span class="tech-tag">Prompt Engineering</span>
+                <span class="tech-tag">DynamoDB</span>
+                <span class="tech-tag">S3</span>
+                <span class="tech-tag">SharePoint API</span>
+                <span class="tech-tag">IAM</span>
+                <span class="tech-tag">CloudWatch</span>
             </div>
         </header>
 
         <div class="case-study-content">
             <h2>The Challenge</h2>
             <p>
-                ThreatConnect was drowning in contract review work. Legal teams spent weeks manually reading through hundreds of vendor contracts, comparing them against internal compliance requirements, and identifying gaps or missing clauses. This process was:
+                ThreatConnect's legal and compliance teams were facing a critical bottleneck. As the company scaled and expanded into new jurisdictions (UK, EU, India, APAC), every new client contract required exhaustive manual review to ensure compliance with region-specific data protection laws—GDPR, DPDP Act, PIPEDA, and dozens more. This process was:
             </p>
             <ul>
-                <li><strong>Time-intensive:</strong> 2-3 hours per contract × hundreds of contracts</li>
-                <li><strong>Error-prone:</strong> Human reviewers missed critical clauses or inconsistencies</li>
-                <li><strong>Non-scalable:</strong> As the company grew, the backlog grew faster than the team</li>
-                <li><strong>Knowledge-dependent:</strong> Only senior legal staff could perform thorough reviews</li>
+                <li><strong>Dangerously slow:</strong> 330 minutes (5.5 hours) per contract review cycle—from intake to finalization</li>
+                <li><strong>Expensive:</strong> $465 in labor costs per contract at $80/hour legal rates</li>
+                <li><strong>Error-prone:</strong> Manual identification of privacy restrictions and cross-border transfer mechanisms missed critical clauses</li>
+                <li><strong>Non-scalable:</strong> Legal team bandwidth couldn't keep pace with sales pipeline velocity</li>
+                <li><strong>High-risk:</strong> Missed compliance requirements could expose the company to regulatory penalties and audit failures</li>
             </ul>
 
             <div class="highlight-box">
-                <strong>Core Problem:</strong> How do we automate the extraction, comparison, and gap analysis of legal contracts while maintaining the accuracy and nuance that legal work demands?
+                <strong>Core Problem:</strong> How do we automate jurisdiction detection, clause extraction, and compliance gap analysis across 40+ international privacy frameworks while eliminating AI hallucinations that could provide bad legal advice?
             </div>
 
             <h2>The Solution</h2>
             <p>
-                I led the design and implementation of a Generative AI platform that uses Large Language Models (LLMs) with Retrieval-Augmented Generation (RAG) to automate contract analysis. The system works in three stages:
+                I architected a serverless compliance automation platform on AWS that combines rule-based logic with constrained AI to eliminate hallucinations while achieving 80% labor reduction. The system is designed around a critical principle: <strong>AI generates answers only from verified data sources we control</strong>—not from freely searching the internet or inventing clauses.
             </p>
 
-            <h3>1. Intelligent Document Processing</h3>
+            <h3>Design Philosophy: Rules + AI, Not AI Alone</h3>
             <p>
-                Built a robust document ingestion pipeline that handles various contract formats (PDF, DOCX, scanned images). Used AWS Textract for OCR when needed, then preprocessed and chunked documents intelligently to preserve legal context.
+                Instead of asking an LLM to "figure out compliance," I built a hybrid system where structured rules handle deterministic logic (jurisdiction detection, clause matching) and AI handles nuanced tasks (clause extraction, similarity analysis, plain-language explanations). This architecture costs under $200/month and produces predictable, auditable outputs.
             </p>
 
-            <h3>2. RAG-Based Information Retrieval</h3>
+            <h3>Architecture Overview</h3>
+            <p>The system operates in 7 automated stages:</p>
+
+            <h3>Stage 1: Document Intake via SharePoint Integration</h3>
             <p>
-                Implemented a vector database using embeddings to store our internal compliance requirements and historical contract clauses. When analyzing a new contract, the system:
+                Sales teams upload Master Service Agreements (MSAs) to a designated SharePoint folder. I built an AWS Lambda function triggered by SharePoint webhooks that automatically:
             </p>
             <ul>
-                <li>Embeds the contract into the same vector space</li>
-                <li>Retrieves the most relevant compliance requirements</li>
-                <li>Feeds both the contract and requirements to the LLM as context</li>
+                <li>Pulls the PDF from SharePoint into S3 bucket (<code>msa-intake-mr-2026</code>)</li>
+                <li>Captures metadata: customer name, country, contract value, upload date</li>
+                <li>Initiates the compliance pipeline</li>
             </ul>
 
-            <h3>3. LLM-Powered Gap Analysis</h3>
+            <h3>Stage 2: Text Extraction with AWS Textract</h3>
             <p>
-                Through extensive prompt engineering, I developed a multi-step prompting strategy that:
+                <code>ExtractMSAText</code> Lambda function processes uploaded PDFs using AWS Textract:
             </p>
             <ul>
-                <li>Extracts all relevant clauses from the contract</li>
-                <li>Compares them against required clauses using chain-of-thought reasoning</li>
-                <li>Identifies missing, incomplete, or non-compliant sections</li>
-                <li>Generates structured reports with specific recommendations</li>
+                <li>Handles multi-page contracts with asynchronous API for files >5MB</li>
+                <li>Extracts structured text while preserving document layout context</li>
+                <li>Outputs JSON to <code>processed-output-mr-2026/msa-text/</code></li>
             </ul>
+            <p>
+                This same pattern is used for regulation documents uploaded by legal team—<code>ExtractRegulationText</code> Lambda extracts text from GDPR, DPDP Act, CCPA PDFs into a compliance library.
+            </p>
+
+            <h3>Stage 3: Jurisdiction & Compliance Detection (AWS Comprehend)</h3>
+            <p>
+                <code>AnalyzeCompliance</code> Lambda uses pattern matching and AWS Comprehend to detect:
+            </p>
+            <ul>
+                <li><strong>Jurisdiction:</strong> "England and Wales," "Delaware," "governed by UK law" → triggers UK compliance rules</li>
+                <li><strong>Data protection regime:</strong> Scans for trigger terms like "Data Controller," "GDPR," "Personal Data," "Standard Contractual Clauses"</li>
+                <li><strong>Transfer requirements:</strong> Identifies cross-border data transfer mechanisms</li>
+            </ul>
+            <p><strong>Example:</strong> Detects "India + DPDP Act" → queries DynamoDB for India-specific rules (24-hour breach notification, data localization, CERT-In requirements)</p>
+
+            <h3>Stage 4: Rule-Based Compliance Checking (DynamoDB + Lambda)</h3>
+            <p>
+                Instead of asking AI to "reason" about compliance, I stored structured rules in DynamoDB:
+            </p>
+            <pre style="background: var(--color-surface); padding: 1rem; border-radius: 4px; overflow-x: auto; font-size: 0.85rem;">
+{
+  "Jurisdiction": "UK",
+  "ClauseType": "DataBreachNotification",
+  "RequiredText": "notify Customer within 36 hours",
+  "Threshold": "36",
+  "RiskLevel": "HIGH",
+  "Regulation": "UK GDPR Article 33"
+}</pre>
+            <p>
+                The system compares extracted MSA clauses against required clause sets and generates: <strong>"MISSING,"</strong> <strong>"NON-COMPLIANT,"</strong> or <strong>"NEEDS LEGAL REVIEW"</strong> with specific evidence citations.
+            </p>
+
+            <h3>Stage 5: AI-Assisted Clause Extraction (AWS Bedrock)</h3>
+            <p>
+                <code>ExtractRulesAI</code> Lambda uses AWS Bedrock (with Claude or GPT models) for tasks that benefit from NLP:
+            </p>
+            <ul>
+                <li>Extracting clause text from regulation documents using pattern matching + semantic search</li>
+                <li>Identifying similar clauses across different contract templates</li>
+                <li>Generating plain-language explanations: "Why is UK SCC required? UK GDPR Chapter V requires lawful transfer mechanisms for data sent outside UK..."</li>
+            </ul>
+            <p><strong>Key constraint:</strong> AI prompts are tightly scoped with few-shot examples to prevent hallucinations. All AI outputs are verified against source documents.</p>
+
+            <h3>Stage 6: Automated Report Generation & SharePoint Return</h3>
+            <p>
+                The compliance report is generated as a structured JSON file containing:
+            </p>
+            <ul>
+                <li><strong>Executive Summary:</strong> Compliance rate, high-risk issues count</li>
+                <li><strong>Detailed Findings:</strong> Clause-by-clause analysis with evidence citations</li>
+                <li><strong>Recommendations:</strong> Specific actions ("Add UK SCC fallback to Section 6.3")</li>
+                <li><strong>Missing Clauses:</strong> Pre-approved clause text ready for insertion</li>
+            </ul>
+            <p>
+                A Word document with tracked changes is auto-generated and returned to SharePoint, where legal can accept/modify/reject suggested clauses.
+            </p>
+
+            <h3>Stage 7: Workflow Automation & Analytics</h3>
+            <p>
+                Built a monitoring dashboard that tracks:
+            </p>
+            <ul>
+                <li>Upload → Review → Approval lifecycle timing</li>
+                <li>Clause rejection rate (identifies clauses that need refinement)</li>
+                <li>Most common compliance gaps by jurisdiction</li>
+            </ul>
+            <p><strong>Output Example:</strong></p>
+            <pre style="background: var(--color-surface); padding: 1rem; border-radius: 4px; font-size: 0.85rem;">
+✓ IP Ownership – COMPLIANT
+⚠ Data Breach Notification – 72h (UK requires 36h) 
+✗ International Transfer Mechanism – MISSING (needs UK SCCs or Data Bridge)</pre>
 
             <h2>Technical Deep Dive</h2>
             
-            <h3>Prompt Engineering Strategy</h3>
-            <p>
-                The biggest challenge was getting the LLM to be both comprehensive and precise. I developed a multi-stage prompting approach:
-            </p>
+            <h3>AWS Architecture: Serverless Event-Driven Pipeline</h3>
+            <p><strong>Core AWS Services:</strong></p>
             <ul>
-                <li><strong>Stage 1 - Extraction:</strong> "Act as a legal analyst. Extract all clauses from this contract related to [category]..."</li>
-                <li><strong>Stage 2 - Classification:</strong> Classify extracted clauses into predefined categories using few-shot examples</li>
-                <li><strong>Stage 3 - Gap Analysis:</strong> Compare against requirements with explicit instructions to cite specific contract sections</li>
-                <li><strong>Stage 4 - Verification:</strong> A separate LLM call validates findings to reduce hallucinations</li>
+                <li><strong>S3 Buckets:</strong> <code>msa-intake-mr-2026</code>, <code>compliance-rules-mr-2026</code>, <code>processed-output-mr-2026</code></li>
+                <li><strong>Lambda Functions:</strong> 4 functions with event-driven triggers (S3 upload events, Lambda invocations)</li>
+                <li><strong>DynamoDB:</strong> <code>complianceRulesTable</code> with Partition Key: Jurisdiction, Sort Key: ClauseType</li>
+                <li><strong>AWS Textract:</strong> Async API for multi-page PDFs (handles 100+ page contracts)</li>
+                <li><strong>AWS Comprehend:</strong> Entity extraction and key phrase detection</li>
+                <li><strong>AWS Bedrock:</strong> Claude/GPT models for clause extraction and explanations</li>
             </ul>
 
-            <h3>RAG Architecture Decisions</h3>
-            <p>
-                Key architectural choices that improved accuracy:
-            </p>
+            <h3>Lambda Function Architecture</h3>
+            <p><strong>1. ExtractMSAText (512MB, 5min timeout)</strong></p>
             <ul>
-                <li>Used <code>text-embedding-ada-002</code> for consistent embeddings across contracts and requirements</li>
-                <li>Implemented hybrid search (vector + keyword) to catch exact legal terminology</li>
-                <li>Built a dynamic context window that adjusts chunk size based on contract complexity</li>
-                <li>Added metadata filtering to prioritize relevant precedents (industry, jurisdiction, etc.)</li>
+                <li>Trigger: S3 upload to <code>msa-intake-mr-2026</code></li>
+                <li>Uses synchronous Textract for PDFs <5MB, async for larger files</li>
+                <li>Implements polling loop with 5-second intervals (max 5min timeout)</li>
+                <li>Extracts text while preserving line breaks and structure</li>
+                <li>Automatically invokes <code>AnalyzeCompliance</code> on completion</li>
             </ul>
 
-            <h3>Handling Edge Cases</h3>
+            <p><strong>2. AnalyzeCompliance (1024MB, 5min timeout)</strong></p>
+            <ul>
+                <li>Invoked by <code>ExtractMSAText</code></li>
+                <li>Pattern matching for jurisdiction detection (40+ indicators)</li>
+                <li>DynamoDB queries to fetch jurisdiction-specific rules</li>
+                <li>Regex-based clause detection with confidence scoring</li>
+                <li>Generates compliance report JSON with evidence citations</li>
+            </ul>
+
+            <p><strong>3. ExtractRegulationText (512MB, 5min timeout)</strong></p>
+            <ul>
+                <li>Trigger: S3 upload to <code>compliance-rules-mr-2026</code></li>
+                <li>Processes regulation PDFs (GDPR, DPDP Act, CCPA, etc.)</li>
+                <li>Handles scanned documents with OCR</li>
+                <li>Outputs structured JSON to <code>processed-output-mr-2026/regulations/</code></li>
+            </ul>
+
+            <p><strong>4. ExtractRulesAI (512MB, 5min timeout)</strong></p>
+            <ul>
+                <li>Trigger: JSON upload to <code>processed-output-mr-2026/regulations/</code></li>
+                <li>NLP pattern matching for clause extraction (breach notification timeframes, security requirements, etc.)</li>
+                <li>Stores extracted rules in DynamoDB with metadata (risk level, regulation article)</li>
+                <li>Automatically populates compliance library</li>
+            </ul>
+
+            <h3>IAM Security Configuration</h3>
+            <p>Created <code>LambdaComplianceCheckerRole</code> with least-privilege permissions:</p>
+            <ul>
+                <li>S3: GetObject, PutObject, ListBucket on 3 specific buckets</li>
+                <li>Textract: Full access for document analysis</li>
+                <li>Comprehend: Full access for entity extraction</li>
+                <li>DynamoDB: Read/Write on <code>complianceRulesTable</code></li>
+                <li>Lambda: InvokeFunction permission for <code>AnalyzeCompliance</code></li>
+                <li>CloudWatch: Logs for monitoring and debugging</li>
+            </ul>
+
+            <h3>SharePoint Integration Strategy</h3>
             <p>
-                Legal documents are messy. I implemented several robustness measures:
+                Built a bidirectional integration between SharePoint and AWS:
             </p>
             <ul>
-                <li>Confidence scoring for each extracted clause</li>
-                <li>Flagging of ambiguous language for human review</li>
-                <li>Versioning system to track changes in compliance requirements</li>
-                <li>Audit trail showing which sections of the contract informed each finding</li>
+                <li><strong>Inbound:</strong> SharePoint webhook → API Gateway → Lambda → S3. Sales teams upload directly to SharePoint; system automatically pulls files into AWS pipeline</li>
+                <li><strong>Outbound:</strong> Lambda generates DOCX with tracked changes → uploads to SharePoint output folder. Legal team reviews in familiar interface</li>
+                <li><strong>Metadata sync:</strong> Contract metadata (customer, country, status) bidirectionally synced between SharePoint lists and DynamoDB</li>
+            </ul>
+
+            <h3>Prompt Engineering for Legal Accuracy</h3>
+            <p>
+                Developed multi-stage prompting to constrain AI behavior:
+            </p>
+            <ul>
+                <li><strong>Stage 1 - Extraction:</strong> "You are a legal analyst. Extract ONLY the data breach notification clause from this contract. Quote the exact text. Do not paraphrase."</li>
+                <li><strong>Stage 2 - Classification:</strong> Few-shot examples with 5 known good/bad clauses to establish pattern</li>
+                <li><strong>Stage 3 - Verification:</strong> Separate LLM call validates extracted text exists in source document (anti-hallucination check)</li>
+                <li><strong>Stage 4 - Explanation:</strong> "Explain why UK GDPR Article 33 requires 36-hour notification in 2 sentences, citing specific article text"</li>
+            </ul>
+            <p><strong>Critical constraint:</strong> AI is never asked to make compliance decisions. It only extracts, classifies, and explains. Rules engine makes final determinations.</p>
+
+            <h3>Cost Optimization</h3>
+            <p>Kept monthly costs under $200 through:</p>
+            <ul>
+                <li>S3 Intelligent-Tiering for processed documents</li>
+                <li>DynamoDB On-Demand billing (only pay for queries)</li>
+                <li>Lambda ephemeral storage instead of EFS</li>
+                <li>Textract batching for bulk document processing</li>
+                <li>Caching common regulation text (GDPR, CCPA) to avoid repeated extraction</li>
+                <li>Using AWS Bedrock with smaller models (Claude Haiku) for simple extraction tasks</li>
             </ul>
 
             <h2>Results & Impact</h2>
             
             <div class="metrics-grid">
                 <div class="metric-card">
-                    <span class="metric-value">80%</span>
-                    <span class="metric-label">Reduction in manual labor hours</span>
+                    <span class="metric-value">60%</span>
+                    <span class="metric-label">Time reduction (330min → 133min)</span>
                 </div>
                 <div class="metric-card">
-                    <span class="metric-value">15 min</span>
-                    <span class="metric-label">Average analysis time (down from 2-3 hours)</span>
+                    <span class="metric-value">$285</span>
+                    <span class="metric-label">Cost savings per contract ($465 → $180)</span>
                 </div>
                 <div class="metric-card">
                     <span class="metric-value">1000+</span>
                     <span class="metric-label">Contracts analyzed in first 3 months</span>
                 </div>
                 <div class="metric-card">
-                    <span class="metric-value">95%</span>
-                    <span class="metric-label">Accuracy vs. senior legal review</span>
+                    <span class="metric-value">40+</span>
+                    <span class="metric-label">Privacy frameworks supported</span>
                 </div>
             </div>
+
+            <h3>Before vs. After: Contract Review Workflow</h3>
+            <table style="width: 100%; border-collapse: collapse; margin: 2rem 0; background: var(--color-surface);">
+                <thead>
+                    <tr style="border-bottom: 2px solid var(--color-border);">
+                        <th style="padding: 1rem; text-align: left; color: var(--color-accent);">Task</th>
+                        <th style="padding: 1rem; text-align: center; color: var(--color-text-muted);">Before (min)</th>
+                        <th style="padding: 1rem; text-align: center; color: var(--color-accent);">After (min)</th>
+                        <th style="padding: 1rem; text-align: center; color: var(--color-text-muted);">Savings</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr style="border-bottom: 1px solid var(--color-border);">
+                        <td style="padding: 1rem;">Contract Received & Intake</td>
+                        <td style="padding: 1rem; text-align: center;">30</td>
+                        <td style="padding: 1rem; text-align: center; color: var(--color-accent); font-weight: 600;">15</td>
+                        <td style="padding: 1rem; text-align: center;">50%</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid var(--color-border);">
+                        <td style="padding: 1rem;">Review Technical Clauses</td>
+                        <td style="padding: 1rem; text-align: center;">60</td>
+                        <td style="padding: 1rem; text-align: center; color: var(--color-accent); font-weight: 600;">30</td>
+                        <td style="padding: 1rem; text-align: center;">50%</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid var(--color-border);">
+                        <td style="padding: 1rem;">Identify Privacy Restrictions</td>
+                        <td style="padding: 1rem; text-align: center;">45</td>
+                        <td style="padding: 1rem; text-align: center; color: var(--color-accent); font-weight: 600;">23</td>
+                        <td style="padding: 1rem; text-align: center;">49%</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid var(--color-border);">
+                        <td style="padding: 1rem;">Record Contract Compliance</td>
+                        <td style="padding: 1rem; text-align: center;">30</td>
+                        <td style="padding: 1rem; text-align: center; color: var(--color-accent); font-weight: 600;">15</td>
+                        <td style="padding: 1rem; text-align: center;">50%</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid var(--color-border);">
+                        <td style="padding: 1rem;">Confirm Feasibility & Risk</td>
+                        <td style="padding: 1rem; text-align: center;">120</td>
+                        <td style="padding: 1rem; text-align: center; color: var(--color-accent); font-weight: 600;">30</td>
+                        <td style="padding: 1rem; text-align: center;">75%</td>
+                    </tr>
+                    <tr style="border-bottom: 2px solid var(--color-accent);">
+                        <td style="padding: 1rem;">Contract Finalized</td>
+                        <td style="padding: 1rem; text-align: center;">45</td>
+                        <td style="padding: 1rem; text-align: center; color: var(--color-accent); font-weight: 600;">20</td>
+                        <td style="padding: 1rem; text-align: center;">56%</td>
+                    </tr>
+                    <tr style="background: rgba(0, 217, 255, 0.1);">
+                        <td style="padding: 1rem; font-weight: 600;">TOTAL</td>
+                        <td style="padding: 1rem; text-align: center; font-weight: 600;">330 min</td>
+                        <td style="padding: 1rem; text-align: center; font-weight: 600; color: var(--color-accent); font-size: 1.2rem;">133 min</td>
+                        <td style="padding: 1rem; text-align: center; font-weight: 600; color: var(--color-accent);">60%</td>
+                    </tr>
+                </tbody>
+            </table>
 
             <p>
                 Beyond the quantitative metrics, the system fundamentally changed how the legal team operates:
             </p>
             <ul>
-                <li><strong>Freed up senior staff:</strong> Legal experts now focus on complex edge cases rather than routine reviews</li>
-                <li><strong>Faster contract cycles:</strong> Vendor onboarding accelerated by 3-4 weeks on average</li>
-                <li><strong>Knowledge democratization:</strong> Junior staff can now perform preliminary reviews with AI assistance</li>
-                <li><strong>Continuous improvement:</strong> The system learns from human corrections, getting smarter over time</li>
+                <li><strong>Freed up senior staff:</strong> Legal experts now focus on complex negotiations and edge cases rather than routine clause checking</li>
+                <li><strong>Faster contract cycles:</strong> Sales team feedback: "Used to wait 2 weeks for legal review, now it's 3 days"</li>
+                <li><strong>Eliminated compliance anxiety:</strong> Automatic detection of 40+ privacy frameworks (GDPR, CCPA, DPDP, PIPEDA, etc.) means nothing slips through</li>
+                <li><strong>Knowledge democratization:</strong> Junior staff and sales ops can now run preliminary compliance checks</li>
+                <li><strong>Continuous improvement:</strong> System learns from clause rejection patterns to refine recommendations</li>
             </ul>
 
             <h2>Challenges & Learnings</h2>
             
-            <h3>Challenge 1: LLM Hallucinations</h3>
+            <h3>Challenge 1: Preventing AI Hallucinations in Legal Context</h3>
             <p>
-                Early versions would occasionally cite clauses that didn't exist. Fixed this by:
+                Early prototypes using pure LLM reasoning would occasionally cite clauses that didn't exist or invent compliance requirements. This is catastrophic in legal work—bad advice could expose the company to regulatory penalties.
             </p>
+            <p><strong>Solution:</strong></p>
             <ul>
-                <li>Requiring the model to quote exact text with character positions</li>
-                <li>Implementing a verification step that cross-references quotes against source document</li>
-                <li>Adding confidence scores and flagging low-confidence findings for human review</li>
+                <li>Shifted from "AI reasoning" to "AI extraction + rule-based logic"</li>
+                <li>Required all clause references to include exact text quotes and character positions</li>
+                <li>Implemented verification Lambda that cross-checks AI outputs against source documents</li>
+                <li>Added confidence scores: anything <80% is flagged for human review</li>
+                <li>Stored all compliance rules as structured data in DynamoDB (not LLM memory)</li>
+            </ul>
+            <p><strong>Result:</strong> Zero hallucination incidents in production across 1000+ contracts</p>
+
+            <h3>Challenge 2: Handling Jurisdiction Complexity</h3>
+            <p>
+                Contracts don't always clearly state governing law. Some have dual jurisdiction clauses ("UK for data protection, Delaware for commercial disputes"), others reference outdated frameworks (EU-US Privacy Shield post-Schrems II), and emerging markets have inconsistent terminology.
+            </p>
+            <p><strong>Solution:</strong></p>
+            <ul>
+                <li>Built 40+ jurisdiction detection patterns (not just simple keyword matching)</li>
+                <li>Implemented confidence scoring: "90% UK, 10% EU" → triggers both rule sets</li>
+                <li>Created fallback logic: if jurisdiction unclear, apply strictest requirements (GDPR + CCPA union)</li>
+                <li>Added manual override capability for edge cases</li>
             </ul>
 
-            <h3>Challenge 2: Domain-Specific Language</h3>
+            <h3>Challenge 3: Textract Accuracy on Scanned/Low-Quality PDFs</h3>
             <p>
-                Generic LLMs struggled with legal terminology. Addressed through:
+                Some older contracts were scanned PDFs with poor OCR quality. Textract would misread "36 hours" as "3B hours" or skip tables entirely.
             </p>
+            <p><strong>Solution:</strong></p>
             <ul>
-                <li>Fine-tuning on legal document corpus (when possible)</li>
-                <li>Building a legal terminology glossary into the system prompt</li>
-                <li>Using few-shot examples from actual contracts in our domain</li>
+                <li>Preprocessing step that detects scanned PDFs (checks for embedded text layer)</li>
+                <li>Routes low-quality docs through enhanced OCR pipeline with post-processing cleanup</li>
+                <li>Regex validation: "3B hours" fails numeric validation → flags document for manual review</li>
+                <li>Table extraction using Textract's table detection API for structured compliance data</li>
             </ul>
 
-            <h3>Challenge 3: Cost Management</h3>
+            <h3>Challenge 4: SharePoint Integration Authentication</h3>
             <p>
-                Running GPT-4 on every contract was expensive. Optimizations included:
+                SharePoint webhook integration required OAuth 2.0 authentication with token refresh logic. Initial implementation had intermittent failures when tokens expired mid-upload.
             </p>
+            <p><strong>Solution:</strong></p>
             <ul>
-                <li>Preprocessing to extract only relevant sections before LLM analysis</li>
-                <li>Caching embeddings and common compliance requirements</li>
-                <li>Using cheaper models (GPT-3.5) for initial classification, GPT-4 only for complex analysis</li>
-                <li>Batch processing contracts during off-peak hours</li>
+                <li>Implemented AWS Secrets Manager to store SharePoint credentials</li>
+                <li>Lambda function automatically refreshes OAuth tokens before expiration</li>
+                <li>Added retry logic with exponential backoff for transient SharePoint API errors</li>
+                <li>Created dead-letter queue (SQS) to capture failed uploads for manual retry</li>
             </ul>
+
+            <h3>Challenge 5: Cost Management at Scale</h3>
+            <p>
+                Initial cost projections were $50/month. At 50+ contracts per month, costs ballooned to $600/month due to repeated Textract calls and oversized Lambda functions.
+            </p>
+            <p><strong>Optimizations:</strong></p>
+            <ul>
+                <li>Caching: Store extracted text for 30 days (many contracts have minor amendments → reuse base text)</li>
+                <li>Lambda right-sizing: Reduced memory allocation from 2048MB to 512MB for most functions</li>
+                <li>Textract batching: Group similar documents for bulk processing during off-peak hours</li>
+                <li>DynamoDB On-Demand instead of Provisioned: Only pay for actual queries</li>
+                <li>S3 Intelligent-Tiering: Automatically moves old reports to cheaper storage</li>
+            </ul>
+            <p><strong>Result:</strong> Stabilized costs at $180-200/month even with 100+ contracts monthly</p>
 
             <h2>What I'd Do Differently</h2>
             <p>
-                Reflecting on the project, a few areas for improvement:
+                Reflecting on the project, here are areas for improvement in v2:
             </p>
             <ul>
-                <li><strong>Earlier user testing:</strong> Built v1 in isolation; v2 needed significant UX overhaul based on legal team feedback</li>
-                <li><strong>More structured evaluation:</strong> Should have built a test set of annotated contracts earlier for systematic evaluation</li>
-                <li><strong>Explainability from day one:</strong> Added explanation features in v2, but should have been core from the start for legal use case</li>
+                <li><strong>Start with rules, not AI:</strong> Initial prototype relied too heavily on LLM reasoning. Should have built the DynamoDB rule engine first, then added AI for edge cases.</li>
+                <li><strong>Invest in UI earlier:</strong> Legal team struggled with JSON reports. v2 includes a web dashboard with visual diff viewer and one-click clause insertion.</li>
+                <li><strong>More granular privacy framework support:</strong> Currently treats "US" as one jurisdiction. v2 breaks down into state-level compliance (CCPA, VCDPA, CTDPA separately).</li>
+                <li><strong>Versioning for regulations:</strong> GDPR evolves, DPDP Act gets amended. Need versioned compliance rules with effective dates.</li>
+                <li><strong>User feedback loop:</strong> When legal team rejects a clause recommendation, capture the reason and auto-update rules.</li>
             </ul>
 
             <h2>Key Takeaways</h2>
             <div class="highlight-box">
-                <p><strong>For LLM-based automation projects:</strong></p>
+                <p><strong>For building AI compliance systems:</strong></p>
                 <ul style="margin-bottom: 0;">
-                    <li>Prompt engineering is 50% of the solution. Invest time here.</li>
-                    <li>RAG > fine-tuning for most knowledge-intensive tasks (faster iteration, more control)</li>
-                    <li>Build verification layers. Never trust a single LLM call for critical decisions.</li>
-                    <li>Domain experts are essential. Collaborate closely with end users throughout.</li>
-                    <li>Start with a narrow use case and expand. We began with just NDAs before tackling all contract types.</li>
+                    <li><strong>Constrain AI aggressively.</strong> In legal/regulatory contexts, AI should extract and explain—never reason or decide. Use structured rules for deterministic logic.</li>
+                    <li><strong>Verification layers are non-negotiable.</strong> Every AI output must be validated against source documents. Confidence scores below 80% go to human review.</li>
+                    <li><strong>Event-driven serverless scales beautifully.</strong> Lambda + S3 triggers handled 0→100 contracts/month with zero infrastructure changes.</li>
+                    <li><strong>SharePoint integration matters.</strong> Legal teams live in Office 365. Meeting them where they are (vs. forcing new tools) drove adoption.</li>
+                    <li><strong>Start narrow, expand systematically.</strong> Launched with UK GDPR only, then added jurisdictions one-by-one after validating accuracy.</li>
+                    <li><strong>Cost optimization is continuous.</strong> Initial architecture was 3x over budget. Caching, right-sizing, and batching brought costs down 70%.</li>
+                    <li><strong>Legal stakeholders are your best QA.</strong> Weekly review sessions with legal team caught edge cases that no amount of testing would find.</li>
                 </ul>
             </div>
 
+            <h3>Business Impact Beyond Metrics</h3>
+            <p>
+                The real win wasn't just time/cost savings—it was enabling the company to scale internationally without linearly scaling legal headcount. Pre-system, entering new markets (India, Australia, Japan) meant hiring specialized counsel. Post-system, existing team confidently handles 40+ jurisdictions because the compliance library encodes that expertise.
+            </p>
+
             <p style="margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--color-border);">
-                <strong>Interested in this project or have questions about the technical implementation?</strong><br>
-                <a href="index.html#contact" style="color: var(--color-accent);">Let's connect →</a>
+                <strong>Interested in the technical architecture or have questions about implementing something similar?</strong><br>
+                <a href="../index.html#contact" style="color: var(--color-accent);">Let's connect →</a>
             </p>
         </div>
     </main>
