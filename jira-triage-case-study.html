@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ML-Based Jira Triage & Release Automation - Case Study</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <style>
+        .case-study {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 8rem 2rem 4rem;
+        }
+        .case-study-header {
+            margin-bottom: 3rem;
+        }
+        .back-link {
+            color: var(--color-accent);
+            text-decoration: none;
+            display: inline-block;
+            margin-bottom: 2rem;
+            transition: transform 0.3s ease;
+        }
+        .back-link:hover {
+            transform: translateX(-5px);
+        }
+        .case-study h1 {
+            font-family: var(--font-display);
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+        .case-study-meta {
+            display: flex;
+            gap: 2rem;
+            color: var(--color-text-muted);
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        .meta-item {
+            display: flex;
+            flex-direction: column;
+        }
+        .meta-label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .meta-value {
+            font-size: 1.1rem;
+            color: var(--color-accent);
+            font-weight: 600;
+        }
+        .case-study-content h2 {
+            font-family: var(--font-display);
+            font-size: 2rem;
+            margin: 3rem 0 1rem;
+            color: var(--color-text);
+        }
+        .case-study-content h3 {
+            font-size: 1.3rem;
+            margin: 2rem 0 1rem;
+            color: var(--color-accent);
+        }
+        .case-study-content p {
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+            color: var(--color-text-muted);
+        }
+        .case-study-content ul {
+            margin: 1rem 0 1.5rem 2rem;
+            color: var(--color-text-muted);
+            line-height: 1.8;
+        }
+        .case-study-content li {
+            margin-bottom: 0.5rem;
+        }
+        .highlight-box {
+            background: var(--color-surface);
+            border-left: 3px solid var(--color-accent);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+        .tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin: 1rem 0;
+        }
+        .tech-tag {
+            background: rgba(0, 217, 255, 0.1);
+            color: var(--color-accent);
+            padding: 0.4rem 1rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            border: 1px solid rgba(0, 217, 255, 0.2);
+        }
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        .metric-card {
+            background: var(--color-surface);
+            padding: 1.5rem;
+            border-radius: 8px;
+            border: 1px solid var(--color-border);
+        }
+        .metric-card .metric-value {
+            font-size: 2.5rem;
+            color: var(--color-accent);
+            font-weight: 600;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+        .metric-card .metric-label {
+            color: var(--color-text-muted);
+            font-size: 0.9rem;
+        }
+        code {
+            background: var(--color-surface);
+            padding: 0.2rem 0.5rem;
+            border-radius: 3px;
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
+            color: var(--color-accent);
+        }
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        .feature-card {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+            padding: 1.5rem;
+        }
+        .feature-card h4 {
+            color: var(--color-accent);
+            margin-bottom: 0.8rem;
+            font-size: 1.1rem;
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <div class="nav-content">
+            <a href="index.html" class="logo">Portfolio</a>
+            <div class="nav-links">
+                <a href="index.html#about">About</a>
+                <a href="index.html#projects">Projects</a>
+                <a href="index.html#contact">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="case-study">
+        <a href="index.html#projects" class="back-link">← Back to Projects</a>
+        
+        <header class="case-study-header">
+            <h1>ML-Based Jira Triage & Release Automation</h1>
+            
+            <div class="case-study-meta">
+                <div class="meta-item">
+                    <span class="meta-label">Role</span>
+                    <span class="meta-value">Lead Engineer / Project Manager</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Timeline</span>
+                    <span class="meta-value">4 months (Capstone)</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Impact</span>
+                    <span class="meta-value">75% time reduction</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Company</span>
+                    <span class="meta-value">ThreatConnect (Dataminr)</span>
+                </div>
+            </div>
+
+            <div class="tech-stack">
+                <span class="tech-tag">React</span>
+                <span class="tech-tag">Node.js</span>
+                <span class="tech-tag">Gemini AI</span>
+                <span class="tech-tag">Jira REST API</span>
+                <span class="tech-tag">AWS</span>
+                <span class="tech-tag">Google Apps Script</span>
+                <span class="tech-tag">JQL</span>
+                <span class="tech-tag">Machine Learning</span>
+                <span class="tech-tag">Slack API</span>
+            </div>
+        </header>
+
+        <div class="case-study-content">
+            <h2>The Challenge</h2>
+            <p>
+                ThreatConnect's three-person documentation team was drowning in manual triage work. Every quarter, they manually reviewed 350+ Jira tickets to determine which required documentation updates—a process that consumed 3-4 hours per cycle and involved tedious copy-paste between Jira and Google Sheets.
+            </p>
+            <ul>
+                <li><strong>Manual data transfer:</strong> Copy ticket details from Jira → paste into Google Sheets → categorize → prioritize</li>
+                <li><strong>Time-intensive review:</strong> 3-4 hours spent reading ticket descriptions to understand what documentation needs updating</li>
+                <li><strong>Context switching:</strong> Constant back-and-forth between Jira, Google Sheets, and knowledge base</li>
+                <li><strong>Missed tickets:</strong> In the rush, some high-priority tickets fell through the cracks</li>
+                <li><strong>No automation:</strong> Despite using Jira Automation for some workflows, triage remained entirely manual</li>
+            </ul>
+
+            <div class="highlight-box">
+                <strong>Core Problem:</strong> How do we eliminate manual data entry, automatically prioritize tickets, and leverage AI to suggest which knowledge base articles need updating—all while integrating seamlessly with existing Jira workflows?
+            </div>
+
+            <h2>The Solution</h2>
+            <p>
+                I led a Capstone team to build a web-based AI-powered triage dashboard that integrates Jira, Gemini AI, and Google Apps Script to automate 75% of the documentation team's triage workflow. The system was designed around a key constraint: <strong>we couldn't replace or redesign existing Jira infrastructure</strong>—only augment it.
+            </p>
+
+            <h3>System Architecture: 5 Core Components</h3>
+
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h4>1. Custom Dashboard</h4>
+                    <p>Centralized React-based interface displaying all Jira tickets with advanced filtering by status, priority, date, and assignee. Eliminates the need for Google Sheets entirely.</p>
+                </div>
+                <div class="feature-card">
+                    <h4>2. Jira API Integration</h4>
+                    <p>Bidirectional sync using Jira REST API. Dashboard pulls ticket data automatically, and any changes made in the dashboard update the corresponding Jira ticket in real-time.</p>
+                </div>
+                <div class="feature-card">
+                    <h4>3. Gemini AI Engine</h4>
+                    <p>Analyzes ticket content to generate summaries, categorize urgency, and recommend specific knowledge base articles that need updating based on ticket context.</p>
+                </div>
+                <div class="feature-card">
+                    <h4>4. Role-Based Access Control</h4>
+                    <p>Secure authentication system that restricts dashboard access based on user roles (viewer vs. editor) to protect sensitive ticket data.</p>
+                </div>
+                <div class="feature-card">
+                    <h4>5. Notification System</h4>
+                    <p>Proactive alerts via dashboard and Slack when new high-priority tickets arrive or when errors are detected (missing data, null tickets).</p>
+                </div>
+            </div>
+
+            <h3>How It Works: The Triage Workflow</h3>
+            
+            <p><strong>Step 1: Automated Ticket Ingestion</strong></p>
+            <p>
+                When a new Jira ticket is created or updated, the dashboard automatically pulls it via Jira REST API using JQL (Jira Query Language) queries. Key data extracted:
+            </p>
+            <ul>
+                <li>Ticket ID, status, priority, assignee</li>
+                <li>Issue type (bug, feature, enhancement)</li>
+                <li>Description, comments, linked issues</li>
+                <li>Labels and custom fields (e.g., "documentation-required")</li>
+            </ul>
+
+            <p><strong>Step 2: AI-Powered Analysis</strong></p>
+            <p>
+                Gemini AI processes each ticket through a multi-stage pipeline:
+            </p>
+            <ul>
+                <li><strong>Summarization:</strong> Condenses long ticket descriptions into 2-3 sentence summaries</li>
+                <li><strong>Categorization:</strong> Classifies tickets by urgency (high/medium/low) and documentation impact</li>
+                <li><strong>Article Matching:</strong> Uses semantic search to identify which existing knowledge base articles are affected</li>
+                <li><strong>Recommendation Generation:</strong> Suggests specific actions ("Update API authentication article with new OAuth flow")</li>
+            </ul>
+
+            <p><strong>Step 3: ML-Based Anomaly Detection & Prioritization</strong></p>
+            <p>
+                Built a lightweight classification model that learns from historical triage decisions to flag high-risk tickets:
+            </p>
+            <ul>
+                <li>Analyzes patterns: tickets with specific labels + high comment count = urgent</li>
+                <li>Detects anomalies: tickets sitting idle for >7 days without triage</li>
+                <li>Prioritizes based on business impact: customer-facing features ranked higher</li>
+            </ul>
+
+            <p><strong>Step 4: Dashboard Presentation & User Action</strong></p>
+            <p>
+                Documentation team sees a clean interface with:
+            </p>
+            <ul>
+                <li>AI-generated summary at the top of each ticket card</li>
+                <li>Suggested knowledge base articles with confidence scores</li>
+                <li>One-click actions: "Mark as triaged," "Assign to writer," "Update article"</li>
+                <li>Real-time status sync back to Jira</li>
+            </ul>
+
+            <div style="background: var(--color-surface); padding: 2rem; border-radius: 8px; margin: 2rem 0; border: 1px solid var(--color-border);">
+                <h4 style="color: var(--color-accent); margin-bottom: 1rem; text-align: center;">Dashboard Mockup</h4>
+                <img src="jira-triage-dashboard-mockup.png" alt="Dashboard interface showing Jira tickets with AI summaries and recommendations" style="width: 100%; max-width: 1000px; display: block; margin: 0 auto; border-radius: 4px;">
+                <p style="text-align: center; color: var(--color-text-muted); font-size: 0.9rem; margin-top: 1rem;">Figure 1: Triage dashboard with Gemini AI recommendations and knowledge base article suggestions</p>
+            </div>
+
+            <h2>Technical Implementation</h2>
+
+            <h3>Frontend: React Dashboard</h3>
+            <p>Built with React for responsive, real-time UI updates:</p>
+            <ul>
+                <li><strong>Component architecture:</strong> TicketCard, FilterBar, AISummaryPanel, ArticleRecommendations</li>
+                <li><strong>State management:</strong> React Context API for global ticket data</li>
+                <li><strong>Real-time updates:</strong> WebSocket connection for live Jira sync</li>
+                <li><strong>Filtering & search:</strong> Client-side filtering by multiple criteria (status, priority, AI confidence score)</li>
+            </ul>
+
+            <h3>Backend: Node.js API Server</h3>
+            <p>Express.js server handling Jira integration and AI orchestration:</p>
+            <ul>
+                <li><strong>Jira REST API wrapper:</strong> Handles authentication, rate limiting, error retry logic</li>
+                <li><strong>Gemini AI integration:</strong> Structured prompts for ticket analysis and article matching</li>
+                <li><strong>ML model serving:</strong> TensorFlow.js model for anomaly detection runs server-side</li>
+                <li><strong>Caching layer:</strong> Redis cache for frequently accessed tickets and AI responses</li>
+            </ul>
+
+            <h3>Jira Integration Strategy</h3>
+            <p><strong>JQL Queries for Smart Filtering:</strong></p>
+            <pre style="background: var(--color-surface); padding: 1rem; border-radius: 4px; overflow-x: auto; font-size: 0.85rem;">
+project = "Documentation" AND 
+(labels = "docs-required" OR description ~ "documentation") AND 
+status != Closed AND 
+created >= -90d
+ORDER BY priority DESC, updated DESC</pre>
+
+            <p><strong>Bidirectional Sync:</strong></p>
+            <ul>
+                <li>Dashboard → Jira: When user marks ticket as triaged, API call updates Jira status field</li>
+                <li>Jira → Dashboard: Webhook triggers dashboard refresh when ticket is updated in Jira</li>
+                <li>Conflict resolution: Last-write-wins with user notification if conflict detected</li>
+            </ul>
+
+            <h3>Gemini AI Prompt Engineering</h3>
+            <p>Structured prompts to ensure consistent, useful outputs:</p>
+            <pre style="background: var(--color-surface); padding: 1rem; border-radius: 4px; overflow-x: auto; font-size: 0.85rem;">
+You are a documentation triage assistant for ThreatConnect.
+
+Task: Analyze this Jira ticket and provide:
+1. A 2-3 sentence summary of the issue
+2. Urgency classification (HIGH/MEDIUM/LOW)
+3. List of knowledge base articles that need updating (with confidence %)
+4. Recommended action for documentation team
+
+Ticket: [ticket content]
+
+Knowledge Base: [list of article titles and descriptions]
+
+Output format:
+{
+  "summary": "...",
+  "urgency": "HIGH",
+  "affected_articles": [
+    {"title": "API Authentication", "confidence": 0.92, "reason": "..."}
+  ],
+  "recommendation": "..."
+}</pre>
+
+            <h3>ML Anomaly Detection Model</h3>
+            <p>Trained a simple classification model on historical triage data:</p>
+            <ul>
+                <li><strong>Features:</strong> Ticket age, comment count, label combinations, assignee history, update frequency</li>
+                <li><strong>Labels:</strong> "Urgent" (triaged within 24h), "Normal" (triaged within 1 week), "Low priority"</li>
+                <li><strong>Model:</strong> Random Forest classifier (scikit-learn) with 87% accuracy</li>
+                <li><strong>Deployment:</strong> Exported to TensorFlow.js for server-side inference</li>
+            </ul>
+
+            <h3>Google Apps Script Automation</h3>
+            <p>Built supplementary automation for release notes generation:</p>
+            <ul>
+                <li>Pulls closed tickets from Jira via API</li>
+                <li>Groups by release version using fix version field</li>
+                <li>Generates formatted release notes in Google Docs</li>
+                <li>Automatically shares doc with product team via email</li>
+            </ul>
+
+            <h2>Results & Impact</h2>
+            
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <span class="metric-value">75%</span>
+                    <span class="metric-label">Time reduction (3-4 hours → <1 hour)</span>
+                </div>
+                <div class="metric-card">
+                    <span class="metric-value">350+</span>
+                    <span class="metric-label">Tickets triaged per quarter</span>
+                </div>
+                <div class="metric-card">
+                    <span class="metric-value">Zero</span>
+                    <span class="metric-label">Manual data entry required</span>
+                </div>
+                <div class="metric-card">
+                    <span class="metric-value">87%</span>
+                    <span class="metric-label">AI recommendation accuracy</span>
+                </div>
+            </div>
+
+            <h3>Before vs. After</h3>
+            <table style="width: 100%; border-collapse: collapse; margin: 2rem 0; background: var(--color-surface);">
+                <thead>
+                    <tr style="border-bottom: 2px solid var(--color-border);">
+                        <th style="padding: 1rem; text-align: left;">Task</th>
+                        <th style="padding: 1rem; text-align: center; color: var(--color-text-muted);">Before</th>
+                        <th style="padding: 1rem; text-align: center; color: var(--color-accent);">After</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr style="border-bottom: 1px solid var(--color-border);">
+                        <td style="padding: 1rem;">Manual Jira → Sheets transfer</td>
+                        <td style="padding: 1rem; text-align: center;">45 minutes</td>
+                        <td style="padding: 1rem; text-align: center; color: var(--color-accent); font-weight: 600;">0 minutes</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid var(--color-border);">
+                        <td style="padding: 1rem;">Ticket review & categorization</td>
+                        <td style="padding: 1rem; text-align: center;">90 minutes</td>
+                        <td style="padding: 1rem; text-align: center; color: var(--color-accent); font-weight: 600;">20 minutes</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid var(--color-border);">
+                        <td style="padding: 1rem;">Article matching research</td>
+                        <td style="padding: 1rem; text-align: center;">60 minutes</td>
+                        <td style="padding: 1rem; text-align: center; color: var(--color-accent); font-weight: 600;">10 minutes</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid var(--color-border);">
+                        <td style="padding: 1rem;">Priority assignment</td>
+                        <td style="padding: 1rem; text-align: center;">25 minutes</td>
+                        <td style="padding: 1rem; text-align: center; color: var(--color-accent); font-weight: 600;">5 minutes</td>
+                    </tr>
+                    <tr style="border-bottom: 2px solid var(--color-accent);">
+                        <td style="padding: 1rem; font-weight: 600;">TOTAL</td>
+                        <td style="padding: 1rem; text-align: center; font-weight: 600;">3-4 hours</td>
+                        <td style="padding: 1rem; text-align: center; font-weight: 600; color: var(--color-accent); font-size: 1.2rem;">&lt;1 hour</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p><strong>Qualitative Impact:</strong></p>
+            <ul>
+                <li><strong>Team satisfaction:</strong> "Finally, we can focus on writing instead of ticket hunting"</li>
+                <li><strong>Reduced missed tickets:</strong> ML anomaly detection flags stale tickets automatically</li>
+                <li><strong>Better prioritization:</strong> AI urgency classification caught 12 critical tickets that would have been triaged late</li>
+                <li><strong>Knowledge transfer:</strong> New team members onboard faster with AI-suggested article mappings</li>
+            </ul>
+
+            <h2>Technical Challenges & Solutions</h2>
+
+            <h3>Challenge 1: Jira API Rate Limits</h3>
+            <p>
+                Jira Cloud enforces strict rate limits (10 requests/second). With 350+ tickets, initial implementation hit rate limits and failed.
+            </p>
+            <p><strong>Solution:</strong></p>
+            <ul>
+                <li>Implemented request batching: fetch 50 tickets per API call using JQL pagination</li>
+                <li>Added exponential backoff with retry logic (3 attempts before failure)</li>
+                <li>Caching layer: store ticket data in Redis for 15 minutes to reduce API calls</li>
+                <li>Background job: refresh ticket data every 30 minutes instead of on-demand</li>
+            </ul>
+
+            <h3>Challenge 2: Gemini AI Response Consistency</h3>
+            <p>
+                Early versions of AI summaries varied wildly in format—sometimes JSON, sometimes plain text, sometimes incomplete.
+            </p>
+            <p><strong>Solution:</strong></p>
+            <ul>
+                <li>Enforced strict JSON schema in prompt with examples</li>
+                <li>Added response validation: reject responses that don't match schema</li>
+                <li>Fallback logic: if AI response invalid, use rule-based summarization (extract first sentence of description)</li>
+                <li>Few-shot prompting: included 3 examples of good ticket→summary pairs</li>
+            </ul>
+
+            <h3>Challenge 3: Knowledge Base Article Matching Accuracy</h3>
+            <p>
+                Initial semantic search for article recommendations had low precision—AI suggested irrelevant articles 40% of the time.
+            </p>
+            <p><strong>Solution:</strong></p>
+            <ul>
+                <li>Pre-processed knowledge base: created embeddings for all article titles + first paragraph</li>
+                <li>Hybrid search: combined semantic similarity with keyword matching</li>
+                <li>Confidence thresholding: only show recommendations with >70% confidence</li>
+                <li>User feedback loop: when team rejects a suggestion, retrain model to avoid that pattern</li>
+            </ul>
+            <p><strong>Result:</strong> Accuracy improved from 60% → 87%</p>
+
+            <h3>Challenge 4: User Authentication & Security</h3>
+            <p>
+                Dashboard needed to authenticate users but couldn't store Jira passwords (security policy violation).
+            </p>
+            <p><strong>Solution:</strong></p>
+            <ul>
+                <li>OAuth 2.0 integration with Jira (users authorize dashboard once via OAuth flow)</li>
+                <li>Role-based access control: query Jira for user's group membership, restrict dashboard features accordingly</li>
+                <li>Session management: JWT tokens with 8-hour expiration</li>
+                <li>Audit logging: all dashboard actions logged for compliance</li>
+            </ul>
+
+            <h2>Architecture Decisions & Tradeoffs</h2>
+
+            <h3>Why React Over Angular/Vue?</h3>
+            <ul>
+                <li>Team expertise: ThreatConnect's engineering team already uses React</li>
+                <li>Component reusability: built reusable TicketCard components for future features</li>
+                <li>Large ecosystem: easier to find libraries for Jira integration</li>
+            </ul>
+
+            <h3>Why Gemini AI Over OpenAI GPT?</h3>
+            <ul>
+                <li>Cost: Gemini cheaper for high-volume requests (350+ tickets)</li>
+                <li>Context window: Gemini 1.5 Pro handles longer ticket descriptions</li>
+                <li>Structured outputs: Gemini's JSON mode more reliable than GPT function calling</li>
+            </ul>
+
+            <h3>Why Host on AWS vs. Internal Infrastructure?</h3>
+            <ul>
+                <li>Scalability: AWS auto-scales during high traffic (e.g., end-of-quarter ticket surge)</li>
+                <li>Managed services: Lambda for serverless functions, RDS for database, reduces ops overhead</li>
+                <li>Security: AWS security groups + VPC isolation meet ThreatConnect's compliance requirements</li>
+            </ul>
+
+            <h2>Future Enhancements</h2>
+            <p>Post-Capstone roadmap for v2.0:</p>
+            <ul>
+                <li><strong>Auto-assignment:</strong> ML model predicts which team member should handle each ticket based on expertise</li>
+                <li><strong>Proactive article drafting:</strong> AI generates draft updates for knowledge base articles</li>
+                <li><strong>Integration with Slack:</strong> Triage decisions sent as Slack notifications with approve/reject buttons</li>
+                <li><strong>Historical trend analysis:</strong> Dashboard showing which product areas generate most documentation tickets</li>
+                <li><strong>Multi-project support:</strong> Extend beyond Documentation project to other Jira projects</li>
+            </ul>
+
+            <h2>Key Learnings</h2>
+            <div class="highlight-box">
+                <p><strong>What worked well:</strong></p>
+                <ul style="margin-bottom: 1rem;">
+                    <li><strong>User-centered design:</strong> Weekly feedback sessions with documentation team caught UX issues early</li>
+                    <li><strong>Incremental rollout:</strong> Launched with core features (Jira sync + AI summaries) first, added ML prioritization in phase 2</li>
+                    <li><strong>API-first approach:</strong> Building REST API separate from React frontend allowed faster iteration</li>
+                    <li><strong>Constraint as feature:</strong> "Can't replace Jira" constraint forced us to build a complementary tool, not a competitor</li>
+                </ul>
+                <p><strong>What could be better:</strong></p>
+                <ul style="margin-bottom: 0;">
+                    <li><strong>Earlier performance testing:</strong> Discovered rate limit issues late in development; should have load-tested with 500+ tickets from day one</li>
+                    <li><strong>More AI fallbacks:</strong> When Gemini API is down, entire dashboard becomes less useful. Should have rule-based backup for critical features</li>
+                    <li><strong>Better error messaging:</strong> Early versions showed generic "API error" messages; v2 added user-friendly explanations</li>
+                </ul>
+            </div>
+
+            <h2>Deliverables</h2>
+            <ul>
+                <li>Production-ready web dashboard hosted on AWS</li>
+                <li>Comprehensive system documentation (architecture diagrams, API specs, deployment guide)</li>
+                <li>User training materials (video walkthrough, quick-start guide)</li>
+                <li>GitHub repository with full source code</li>
+                <li>ML model training pipeline and dataset (anonymized)</li>
+            </ul>
+
+            <p style="margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--color-border);">
+                <strong>Want to learn more about the technical implementation or discuss similar automation projects?</strong><br>
+                <a href="../index.html#contact" style="color: var(--color-accent);">Let's connect →</a>
+            </p>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 Network & Cloud Engineer Portfolio. Built with HTML, CSS, and JavaScript.</p>
+        </div>
+    </footer>
+</body>
+</html>
