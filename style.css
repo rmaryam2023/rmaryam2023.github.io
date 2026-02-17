@@ -150,14 +150,13 @@ body {
     }
 }
 
-.hero-title {
-    font-family: var(--font-display);
-    font-size: clamp(2rem, 7vw, 5rem);
-    line-height: 1.3;
-    margin-bottom: 1.5rem;
-    font-weight: 700;
+.hero-title { 
+    font-family: var(--font-display); 
+    font-size: clamp(2rem, 7vw, 5rem); 
+    line-height: 1.1; 
+    margin-bottom: 1.5rem; 
+    font-weight: 700; 
     letter-spacing: -0.02em;
-}
 
 .title-line {
     display: block;
