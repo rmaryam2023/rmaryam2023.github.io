@@ -16,6 +16,7 @@
             <a href="#" class="logo">Maryam Rehman</a>
             <div class="nav-links">
                 <a href="#about">About</a>
+                <a href="#product-philosophy">Product Approach</a>
                 <a href="#projects">Projects</a>
                 <a href="#contact">Contact</a>
             </div>
@@ -96,8 +97,7 @@
                            <div class="cert-badge-img">
                                 <img src="ai-solutions-on-cisco-infrastructure-essentials.1 (1).png" alt="AI Solutions on Cisco Infrastructure Essentials " width = "200" title="AI Solution on Cisco Infrastructure Essentials">
                                 <span class="cert-name">Cisco AI Solutions Infrastructure Essentials</span>
-                           
-                            </div>
+                           </div>
                         </div>
                     </div>
                 </div>
@@ -105,7 +105,77 @@
         </div>
     </section>
 
-    
+    <section id="product-philosophy" class="section" style="background: var(--color-surface); border-top: 1px solid var(--color-border); border-bottom: 1px solid var(--color-border);">
+        <div class="container">
+            <h2 class="section-title">Product Approach</h2>
+            <div class="about-text">
+                <p style="font-size: 1.2rem; color: var(--color-text); margin-bottom: 2rem;">
+                    I build products by starting with the problem, not the technology. My approach combines technical depth with customer empathy to ship solutions that actually get used.
+                </p>
+
+                <div class="skills-grid">
+                    <div class="skill-category">
+                        <h3>Discovery</h3>
+                        <ul>
+                            <li><strong>Shadow users:</strong> Watched legal team spend 3-4 hours manually triaging tickets before proposing automation</li>
+                            <li><strong>Measure the pain:</strong> Quantified 330 minutes and $465 per contract before building</li>
+                            <li><strong>Find the constraint:</strong> Identified "can't replace Jira" early, designed around it</li>
+                        </ul>
+                    </div>
+                    <div class="skill-category">
+                        <h3>Execution</h3>
+                        <ul>
+                            <li><strong>Ship iteratively:</strong> v1 had core automation, v2 added ML based on usage data</li>
+                            <li><strong>Make trade-offs explicit:</strong> Chose rules + AI over pure LLM to eliminate hallucinations in legal context</li>
+                            <li><strong>Meet users where they are:</strong> SharePoint integration vs. new UI—adoption matters more than elegance</li>
+                        </ul>
+                    </div>
+                    <div class="skill-category">
+                        <h3>Impact</h3>
+                        <ul>
+                            <li><strong>Define success upfront:</strong> Set KPIs before writing code (time-to-triage, accuracy, cost per contract)</li>
+                            <li><strong>Measure religiously:</strong> Built dashboards to track adoption and identify improvement areas</li>
+                            <li><strong>Learn from failure:</strong> When AI article recommendations hit 60% accuracy, retrained with user feedback → 87%</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div style="background: var(--color-bg); padding: 2rem; border-radius: 8px; margin: 2rem 0; border-left: 3px solid var(--color-accent);">
+                    <h3 style="color: var(--color-accent); margin-bottom: 1rem; font-size: 1.2rem;">My PM Philosophy: Build With, Not For</h3>
+                    <p style="line-height: 1.8; margin-bottom: 1rem;">
+                        The best products come from weekly feedback sessions with the people who'll use them. At ThreatConnect, I spent more time in Slack with the documentation team than in meetings with executives. They caught edge cases no amount of testing would find. They told me when my "elegant" solution was actually annoying. They helped me understand what "done" really meant.
+                    </p>
+                    <p style="line-height: 1.8; margin-bottom: 1rem;">
+                        I prototype fast—React dashboard in 3 days, AWS Lambda in an afternoon—because speed lets you test assumptions before you fall in love with them. But I ship slow, because getting adoption right takes time. The Contract Gap Analysis platform took 3 months to launch, but it worked on day one because we validated every assumption with real contracts and real legal reviewers.
+                    </p>
+                    <p style="line-height: 1.8; margin-bottom: 0;">
+                        I'm technical enough to prototype in code, not just Figma. I understand rate limits, hallucinations, cold start latency, and why "just add AI" isn't a product strategy. But I've also learned that technical elegance doesn't matter if users don't adopt it. The best product decisions balance what's technically possible with what's humanly desirable.
+                    </p>
+                </div>
+
+                <div class="skills-grid" style="margin-top: 2rem;">
+                    <div class="skill-category">
+                        <h3>AI-Native Building</h3>
+                        <p style="color: var(--color-text-muted); line-height: 1.7; border-bottom: none; padding: 0;">
+                            I don't just use AI tools—I understand their constraints. When building the compliance platform, I chose rule-based logic + constrained AI over pure LLM reasoning because legal advice can't hallucinate. When Gemini API responses were inconsistent, I added JSON schema validation + fallback logic. I prototype with Claude and GPT, but I ship with confidence scores, verification layers, and human-in-the-loop workflows.
+                        </p>
+                    </div>
+                    <div class="skill-category">
+                        <h3>Cross-Functional Leadership</h3>
+                        <p style="color: var(--color-text-muted); line-height: 1.7; border-bottom: none; padding: 0;">
+                            I've led without authority. At ThreatConnect, I coordinated Legal, IT, Operations, and Engineering—none of whom reported to me. I learned to earn trust by shipping value: small wins first (automated document intake), then bigger bets (full compliance pipeline). I translate between lawyers who care about liability and engineers who care about latency.
+                        </p>
+                    </div>
+                    <div class="skill-category">
+                        <h3>Data-Driven, Hypothesis-Driven</h3>
+                        <p style="color: var(--color-text-muted); line-height: 1.7; border-bottom: none; padding: 0;">
+                            Every feature starts with a hypothesis: "If we auto-categorize ticket urgency, triage time will drop 50%." Then I measure: deployed ML classifier, tracked actual vs. predicted urgency, compared triage time before/after. Result: 75% reduction, but not because of urgency scores—because AI summaries eliminated the need to read full ticket descriptions. Data changed my mind.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
     
     <section id="projects" class="section projects">
         <div class="container">
@@ -170,10 +240,6 @@
                         <a href="jira-triage-case-study.html" class="link-with-arrow">Case Study →</a>
                     </div>
                 </article>
-
-    
-
-         
 
             </div>
         </div>
